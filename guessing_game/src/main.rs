@@ -1,45 +1,39 @@
-#[derive(Debug)]
-
-enum ArrStr {
-    Text(&'static str),
-    Number(u32),
-}
 fn main() {
-    // タプル型 jsなどと違って丸括弧
-    let x = (500, 200, 1.3);
-    let _x_0 = x.0;
-    let _x_1 = x.1;
-    let _x_2 = x.2;
-
-    let add = x.0 * x.1;
-    println!("{add}です");
-    // Rustでは配列内に複数の定義は禁止。使うにはenumでやるか、str型などにまとめる。
-    let arr_str: [ArrStr; 4] = [
-        ArrStr::Text("test"),
-        ArrStr::Number(2),
-        ArrStr::Text("array"),
-        ArrStr::Number(4),
-    ];
-    let first_item = &arr_str[0];
-    // 単一の反映 人間側は[0]を視覚的に値が分かるから、Text型とわかるが、rustは実行するまでわからないのでmatchが必要
-    match first_item {
-        ArrStr::Text(s) => println!("{s}"),
-        ArrStr::Number(s) => println!("{s}"),
+    let number: i32 = 3;
+    let check_number = number == 3;
+    // JSと違って数値と真偽値を判別するため比較が必要
+    if check_number {
+        println!("3だよ");
+    } else {
+        println!("3じゃない");
     }
 
-    // arr_strをforやloopで出したい。
-    // 番号の取り出しは.iter().enumerate()が必要
-    for (index, x) in arr_str.iter().enumerate().rev() {
-        let index = index + 1;
-        match x {
-            ArrStr::Text(s) => println!("{s},{index}番目"),
-            ArrStr::Number(s) => println!("{s},{index}番目"),
+    // if文の返り値がそれぞれ違う型の場合、enumで定義をするか、
+    // シンプルにif文内で出力を変えるかなどをしないとできない。
+    let condition = true;
+    enum Value {
+        Number(i32),
+        Text(&'static str),
+    }
+    let number = if condition {
+        Value::Number(5)
+    } else {
+        Value::Text("six")
+    };
+    match number {
+        Value::Number(n) => println!("The value of number is: {n}"),
+        Value::Text(s) => println!("The value of number is: {s}"),
+    }
+
+    let mut counter = 0;
+    // breakでloopの処理が終わる。continueは次の処理にいかず、1つ上の階層の初めに戻る。
+    let result = loop {
+        counter += 1;
+        println!("今は{counter}番目です。");
+        if counter == 10 {
+            break counter * 2;
         }
-    }
-    let x = plus_one(2);
-    println!("xは {x}")
-}
+    };
 
-fn plus_one(x: i32) -> i32 {
-    x + 1
+    println!("The result is {result}");
 }
