@@ -1,61 +1,46 @@
 fn main() {
-    let mut s = String::from("hello");
-    s.push_str(", world!");
-    let x = "test";
-    // Rustのprintln!の第一引数はフォーマットのため、変数をそのまま渡せない。第二引数から空の{}中に1つずつ配置される。
-    println!("xがでるはず：{x}、sがでるはず：{}", s);
-    // println!(s);
+    let mut s1 = String::from("hello");
 
-    // &str型は文字を変更できない。
-    // let mut test_str = "hello";
-    // test_str.push_str(",world");
+    let len = calculate_length(&s1);
 
-    // Copyトレイトを実装されているもの。
-    // あらゆる整数型。u32など。
-    // 論理値型であるbool。trueとfalseという値がある。
-    // あらゆる浮動小数点型、f64など。
-    // 文字型であるchar。
-    // タプル。ただ、Copyの型だけを含む場合。例えば、(i32, i32)はCopyだが、 (i32, String)は違う。
-    // なので数値はcloneなどしなくていい。
-    let x = 5;
-    let y = x;
-    let xy = x * y;
-    println!("{xy}");
+    change(&mut s1);
+    // '{}'の長さは、{}です
+    println!("The length of '{}' is {}.", s1, len);
 
-    let s1 = String::from("hello");
+    let mut two_s = String::from("hello");
+    // これは駄目。二回可変参照は禁止されている。
+    // let r1 = &mut two_s;
+    // let r2 = &mut two_s;
+    // これはOK
+    let r1 = &two_s;
+    let r2 = &two_s;
+    // これはNG, r1,r2で不変で参照がされているため可変で定義ができない。
+    // let r3 = &mut two_s;
+    // println!("{}, {}, {}", r1, r2, r3)
+    let r3 = &two_s;
+    println!("{}, {}, {}", r1, r2, r3);
 
-    // let mut s2 = &s1; 参照だけではpush_strは使えない。あくまで参照だけなので
-    // 参照元をいじりたい場合はString::fromで囲む必要がある。
-    // let mut s2 = String::from(&s1); これでも出来るが結局同じものを参照するならcloneが手っ取り早い。
-    // cloneでもいけるので、cloneのが短くて良い。
-    let mut s2 = s1.clone();
-    s2.push_str("test");
-    println!("{},world", s1);
-    println!("{},world", s2);
-
-    let s = String::from("hello"); // sがスコープに入る
-
-    takes_ownership(&s); // sの値が関数にムーブされ...
-    // ... ここではもう有効ではない
-    // これはString::from自体が固定値を扱うものではないので1回きりの参照になってしまう。
-    // 但し引数の方をStringから参照できる&Stringに変えれば値が不変でも問題なし
-    // cloneでも渡せるが、sを渡した後にs.clone()はできない。
-    let x = 5; // xがスコープに入る
-
-    makes_copy(x); // xも関数にムーブされるが、
-    // i32はCopyなので、この後にxを使っても
-    makes_copy(x); // xも関数にムーブされるが、
-    // 大丈夫
+    let reference_to_nothing = dangle();
+    print!("{reference_to_nothing}");
 }
 
-// &strは固定値、String::fromは提示にヒープを確保する。そのためユーザーからの入力値や値を検証する時に受け取る変数値を入れる時はStringを活用する。
-fn takes_ownership(some_string: &String) {
-    // some_stringがスコープに入る。
-    println!("{}", some_string);
-} // ここでsome_stringがスコープを抜け、`drop`が呼ばれる。後ろ盾してたメモリが解放される。
-// 後ろ盾してたメモリが解放される。
+// これはNG。参照用の値を返してもdangleが完了したらドロップして参照元のsが消えてしまうためNG
+// fn dangle()-> &String {
+//     let s = String::from("hello");
+//     &s
+// }
 
-fn makes_copy(some_integer: i32) {
-    // some_integerがスコープに入る
-    println!("{}", some_integer);
-} // ここでsome_integerがスコープを抜ける。何も特別なことはない。
+// フツーに値を返せば良い。
+fn dangle() -> String {
+    String::from("hello")
+}
+
+// 引数で受け取った可変参照ができる値は、渡される値自体も定義されている時に参照可能と宣言をしないといけない。
+fn change(some_string: &mut String) {
+    some_string.push_str(",world");
+    println!("{}", some_string)
+}
+
+fn calculate_length(s: &String) -> usize {
+    s.len()
+}
