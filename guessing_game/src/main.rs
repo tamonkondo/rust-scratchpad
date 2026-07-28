@@ -1,41 +1,53 @@
-#[derive(Debug)]
-struct User {
-    active: bool,
-    username: String,
-    email: String,
-    sign_in_count: u64,
-}
-
-struct Color(i32, i32, i32);
-struct Point(i32, i32, i32);
-
-#[derive(Debug)]
 struct Rectangle {
     width: u32,
     height: u32,
 }
 
-fn main() {
-    let user1 = create_user(String::from("test"), String::from("test@emai.com"));
-
-    let user2 = create_user(user1.username, String::from("user2@email.com"));
-    println!("{:#?}", user2);
-    let black = Color(1, 1, 2);
-    let origin = Point(1, 1, 2);
-
-    let rect1 = Rectangle {
-        width: 30,
-        height: 30,
-    };
-
-    dbg!(&rect1);
+impl Rectangle {
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+    fn width(&self) -> bool {
+        self.width > 0
+    }
+    fn can_hold(&self, other: &Rectangle) -> bool {
+        self.width > other.width && self.height > other.height
+    }
+    fn create(size: u32) -> Self {
+        Self {
+            width: size,
+            height: size,
+        }
+    }
+    fn union(rectangles: &[Rectangle]) -> u32 {
+        rectangles.iter().map(|r| r.width * r.height).sum()
+    }
 }
 
-fn create_user(username: String, email: String) -> User {
-    User {
-        active: false,
-        username,
-        email,
-        sign_in_count: 1,
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+    let rect2 = Rectangle {
+        width: 10,
+        height: 40,
+    };
+    let rect3 = Rectangle {
+        width: 60,
+        height: 45,
+    };
+    // インスタンスで呼び出すことも可能
+    let square = Rectangle::create(2);
+
+    println!("rect1 area is {}", rect1.area());
+    if rect1.width() {
+        println!("rect1のwidthは{}です。", rect1.width);
+    } else {
+        println!("rect1のwidthは無く、{}です。", rect1.width);
     }
+    println!("Can rect1 hold rect2? {}", rect1.can_hold(&rect2));
+    println!("Can rect1 hold rect3? {}", rect1.can_hold(&rect3));
+    println!("Can rect1 hold square? {}", rect1.can_hold(&square));
+    println!("total area {}", Rectangle::union(&[rect1, rect2]))
 }
