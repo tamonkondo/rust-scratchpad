@@ -1,29 +1,41 @@
-// スライスについて forなど
-
-fn main() {
-    let mut _s = String::from("hello world");
-
-    let word = first_word(&_s);
-    // ここでsをclearしているが、wordはその前にsを参照だけしているため、後述のprintlnには影響がない。
-    // ただし返り値がstringの場合文字自体が変わるためエラーになる。
-    // _s.clear();
-    println!("{}", word);
-    println!("{}", _s);
-    // 文字を返す場合はエラーにならない。
-
-    let hello = &_s[..];
-    let world = &_s[6..11];
-    println!("{},{}", hello, world)
+#[derive(Debug)]
+struct User {
+    active: bool,
+    username: String,
+    email: String,
+    sign_in_count: u64,
 }
 
-fn first_word(s: &String) -> &str {
-    let bytes = s.as_bytes();
-    // println!("{:?}", bytes);
-    for (i, &item) in bytes.iter().enumerate() {
-        if item == b' ' {
-            return &s[0..i];
-        }
-    }
+struct Color(i32, i32, i32);
+struct Point(i32, i32, i32);
 
-    &s[..]
+#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let user1 = create_user(String::from("test"), String::from("test@emai.com"));
+
+    let user2 = create_user(user1.username, String::from("user2@email.com"));
+    println!("{:#?}", user2);
+    let black = Color(1, 1, 2);
+    let origin = Point(1, 1, 2);
+
+    let rect1 = Rectangle {
+        width: 30,
+        height: 30,
+    };
+
+    dbg!(&rect1);
+}
+
+fn create_user(username: String, email: String) -> User {
+    User {
+        active: false,
+        username,
+        email,
+        sign_in_count: 1,
+    }
 }
