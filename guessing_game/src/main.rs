@@ -1,34 +1,91 @@
-use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
+use std::io::ErrorKind::Other;
 
-// enum IpAddr {
-//     V4(String),
-//     V6(String),
-// }
-// struct IpAddr {
-//     kind: IpAddrKind,
-//     address: String,
-// }
-
-// fn route(ip_kind: IpAddrKind) {}
-enum Message {
-    Ouit,
-    Move { x: i32, y: i32 },
-    Write(String),
-    ChangeColor(i32, i32, i32),
+#[derive(Debug)]
+enum UsState {
+    Alabama,
+    Alaska,
+    Arizona,
+    Arkansas,
+    California,
+    Colorado,
+    Connecticut,
+    Delaware,
+    Florida,
+    Georgia,
+    Hawaii,
+    Idaho,
+    Illinois,
+    Indiana,
+    Iowa,
+    Kansas,
+    Kentucky,
+    Louisiana,
+    Maine,
+    Maryland,
+    Massachusetts,
+    Michigan,
+    Minnesota,
+    Mississippi,
+    Missouri,
+    Montana,
+    Nebraska,
+    Nevada,
+    NewHampshire,
+    NewJersey,
+    NewMexico,
+    NewYork,
+    NorthCarolina,
+    NorthDakota,
+    Ohio,
+    Oklahoma,
+    Oregon,
+    Pennsylvania,
+    RhodeIsland,
+    SouthCarolina,
+    SouthDakota,
+    Tennessee,
+    Texas,
+    Utah,
+    Vermont,
+    Virginia,
+    Washington,
+    WestVirginia,
+    Wisconsin,
+    Wyoming,
 }
-enum Option<T> {
-    None,
-    Some(T),
+enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter(UsState),
+}
+
+fn value_in_cents(coin: Coin) -> u8 {
+    match coin {
+        Coin::Penny => {
+            println!("Lucky penny!");
+            1
+        }
+        Coin::Nickel => 5,
+        Coin::Dime => 10,
+        Coin::Quarter(state) => {
+            println!("State quarter from {:?}!", state);
+            25
+        }
+    }
 }
 
 fn main() {
-    // let four = IpAddrKind::V4;
-    // let six = IpAddrKind::V6;
+    let some_coin = Coin::Quarter(UsState::Wyoming);
 
-    let home = IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1));
-    let loopback = IpAddr::V6(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 1));
-    let some_number = Option::Some(5);
-    let some_char = Option::Some('e');
+    println!("{}", value_in_cents(some_coin));
 
-    let absent_number: Option<i32> = Option::None;
+    let dice_roll = 9;
+    match dice_roll {
+        3 => add_fancy_hat(),
+        7 => remove_fancy_hat(),
+        _ => (),
+    }
+    fn add_fancy_hat() {}
+    fn remove_fancy_hat() {}
 }
